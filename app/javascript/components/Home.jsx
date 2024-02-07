@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
+import ReactPaginate from 'react-paginate';
 
 export default () => {
   // List of fetched companies
   const [companies, setCompanies] = useState([]);
+
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+
 
   // Table filters
   const [companyName, setCompanyName] = useState("");
@@ -10,14 +15,29 @@ export default () => {
   const [minEmployee, setMinEmployee] = useState("");
   const [minimumDealAmount, setMinimumDealAmount] = useState("");
 
-  // Fetch companies from API
-  useEffect(() => {
-    const url = "/api/v1/companies";
+  const handlePageChange = (selectedPage) => {
+    setPage(selectedPage.selected + 1);
+  };
+
+
+  const fetchCompanies = () => {
+    const url = `/api/v1/companies?page=${parseInt(page)}`;
     fetch(url)
       .then((res) => {
         return res.json();
       })
-      .then((res) => setCompanies(res))
+      .then((res) => {
+        setCompanies(res.companies);
+        setTotalPages(res.total_pages);
+      })
+  };
+
+  useEffect(() => {
+    fetchCompanies();
+  }, [page])
+
+  useEffect(() => {
+    fetchCompanies();
   }, [])
 
   return (
@@ -66,6 +86,15 @@ export default () => {
               ))}
             </tbody>
           </table>
+
+          <ReactPaginate
+            initialPage={page}
+            pageCount={totalPages}
+            onPageChange={handlePageChange}
+            containerClassName="pagination"
+            activeClassName="active"
+            disableInitialCallback={true}
+          />
         </div>
       </div>
     </div>

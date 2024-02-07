@@ -2,7 +2,7 @@
 # The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
 #
 
-10.times do |i|
+50.times do |i|
   Company.create(
     name: Faker::Company.name,
     industry: Faker::Company.industry,
@@ -12,7 +12,7 @@ end
 
 statuses = ["pending", "won", "lost"]
 
-30.times do |i|
+150.times do |i|
   Deal.create(
     name: "Deal #{i}",
     status: statuses.sample,
