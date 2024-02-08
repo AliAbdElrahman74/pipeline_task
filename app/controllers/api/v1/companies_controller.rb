@@ -9,6 +9,7 @@ class Api::V1::CompaniesController < ApplicationController
     companies = companies.select('SUM(deals.amount) as deals_amount, companies.*')
                          .joins('LEFT OUTER JOIN deals ON companies.id = deals.company_id')
                          .group('companies.id')
+
     total_pages = companies.total_pages
 
     render json: {

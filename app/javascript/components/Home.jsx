@@ -8,6 +8,8 @@ export default () => {
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
 
+  const [error, setError] = useState(null);
+
 
   // Table filters
   const [companyName, setCompanyName] = useState("");
@@ -22,13 +24,17 @@ export default () => {
   const fetchCompanies = () => {
     const url = `/api/v1/companies?page=${page}&name=${companyName}&industry=${industry}&min_employee_count=${minEmployee}&minimum_deal_amount=${minimumDealAmount}`;
     fetch(url)
-      .then((res) => {
-        return res.json();
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`status: ${response.status}`);
+        }
+        return response.json();
       })
-      .then((res) => {
-        setCompanies(res.companies);
-        setTotalPages(res.total_pages);
+      .then((response) => {
+        setCompanies(response.companies);
+        setTotalPages(response.total_pages);
       })
+      .catch(error => setError(error));
   };
 
   useEffect(() => {
@@ -36,6 +42,10 @@ export default () => {
   }, [page, companyName, industry, minEmployee, minimumDealAmount])
 
   return (
+    error && <div className="alert alert-danger" role="alert">
+      Something went wrong, please try again later, {error.message}
+    </div>
+    ||
     <div className="vw-100 primary-color d-flex align-items-center justify-content-center">
       <div className="jumbotron jumbotron-fluid bg-transparent">
         <div className="container secondary-color">

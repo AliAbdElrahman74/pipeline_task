@@ -47,6 +47,7 @@ gem "bootsnap", require: false
 
 gem 'kaminari'
 gem 'fast_page'
+gem 'rack-attack'
 
 # Use Sass to process CSS
 # gem "sassc-rails"
