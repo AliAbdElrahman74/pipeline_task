@@ -78,7 +78,13 @@ GEM
     debug (1.9.1)
       irb (~> 1.10)
       reline (>= 0.3.8)
+    diff-lcs (1.5.1)
     erubi (1.12.0)
+    factory_bot (6.4.6)
+      activesupport (>= 5.0.0)
+    factory_bot_rails (6.4.3)
+      factory_bot (~> 6.4)
+      railties (>= 5.0.0)
     faker (3.2.3)
       i18n (>= 1.8.11, < 2)
     fast_page (0.1.6)
@@ -181,6 +187,25 @@ GEM
     redis (4.8.1)
     reline (0.4.2)
       io-console (~> 0.5)
+    rspec-core (3.13.0)
+      rspec-support (~> 3.13.0)
+    rspec-expectations (3.13.0)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.13.0)
+    rspec-mocks (3.13.0)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.13.0)
+    rspec-rails (6.1.1)
+      actionpack (>= 6.1)
+      activesupport (>= 6.1)
+      railties (>= 6.1)
+      rspec-core (~> 3.12)
+      rspec-expectations (~> 3.12)
+      rspec-mocks (~> 3.12)
+      rspec-support (~> 3.12)
+    rspec-support (3.13.0)
+    shoulda-matchers (6.1.0)
+      activesupport (>= 5.2.0)
     sprockets (4.2.1)
       concurrent-ruby (~> 1.0)
       rack (>= 2.2.4, < 4)
@@ -218,6 +243,7 @@ DEPENDENCIES
   bootsnap
   cssbundling-rails
   debug
+  factory_bot_rails
   faker
   fast_page
   jbuilder
@@ -228,6 +254,8 @@ DEPENDENCIES
   rack-attack
   rails (~> 7.0.8)
   redis (~> 4.0)
+  rspec-rails
+  shoulda-matchers
   sprockets-rails
   stimulus-rails
   turbo-rails
