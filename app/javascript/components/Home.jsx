@@ -19,9 +19,8 @@ export default () => {
     setPage(selectedPage.selected + 1);
   };
 
-
   const fetchCompanies = () => {
-    const url = `/api/v1/companies?page=${parseInt(page)}`;
+    const url = `/api/v1/companies?page=${page}&name=${companyName}&industry=${industry}&min_employee_count=${minEmployee}&minimum_deal_amount=${minimumDealAmount}`;
     fetch(url)
       .then((res) => {
         return res.json();
@@ -34,11 +33,7 @@ export default () => {
 
   useEffect(() => {
     fetchCompanies();
-  }, [page])
-
-  useEffect(() => {
-    fetchCompanies();
-  }, [])
+  }, [page, companyName, industry, minEmployee, minimumDealAmount])
 
   return (
     <div className="vw-100 primary-color d-flex align-items-center justify-content-center">
@@ -81,7 +76,7 @@ export default () => {
                   <td>{company.name}</td>
                   <td>{company.industry}</td>
                   <td>{company.employee_count}</td>
-                  <td>{company.deals.reduce((sum, deal) => sum + deal.amount, 0)}</td>
+                  <td>{company.deals_amount}</td>
                 </tr>
               ))}
             </tbody>
