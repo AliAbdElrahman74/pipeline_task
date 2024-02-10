@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ReactPaginate from 'react-paginate';
+import axios from 'axios';
 
 export default () => {
   // List of fetched companies
@@ -9,7 +10,6 @@ export default () => {
   const [totalPages, setTotalPages] = useState(1);
 
   const [error, setError] = useState(null);
-
 
   // Table filters
   const [companyName, setCompanyName] = useState("");
@@ -23,18 +23,14 @@ export default () => {
 
   const fetchCompanies = () => {
     const url = `/api/v1/companies?page=${page}&name=${companyName}&industry=${industry}&min_employee_count=${minEmployee}&minimum_deal_amount=${minimumDealAmount}`;
-    fetch(url)
+    axios.get(url)
       .then((response) => {
-        if (!response.ok) {
-          throw new Error(`status: ${response.status}`);
-        }
-        return response.json();
+        setCompanies(response.data.companies);
+        setTotalPages(response.data.total_pages);
       })
-      .then((response) => {
-        setCompanies(response.companies);
-        setTotalPages(response.total_pages);
-      })
-      .catch(error => setError(error));
+      .catch(error => {
+        setError(error.response.data.error_message)
+      });
   };
 
   useEffect(() => {
@@ -43,7 +39,7 @@ export default () => {
 
   return (
     error && <div className="alert alert-danger" role="alert">
-      Something went wrong, please try again later, {error.message}
+      {error}
     </div>
     ||
     <div className="vw-100 primary-color d-flex align-items-center justify-content-center">
@@ -81,7 +77,7 @@ export default () => {
               </tr>
             </thead>
             <tbody>
-              {companies.map((company) => (
+              {companies?.map((company) => (
                 <tr key={company.id}>
                   <td>{company.name}</td>
                   <td>{company.industry}</td>

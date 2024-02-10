@@ -20,6 +20,6 @@ protected
 
   def handle_error(message, status, exception)
     Rails.logger.error exception.message
-    render json: {error: message}.to_json, status: status
+    render json: {error_message: message}.to_json, status: status
   end
 end

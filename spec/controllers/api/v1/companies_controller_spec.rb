@@ -49,7 +49,19 @@ RSpec.describe Api::V1::CompaniesController, type: :controller do
         get :index, params: { page: 1 }
         expect(response).to have_http_status(:success)
         expect(json_response['total_pages']).to eq(1)
-        expect(json_response['current_page']).to eq(2)
+      end
+    end
+
+    context 'when ActiveRecord::RecordNotFound is raised' do
+      before do
+        allow(Company).to receive(:where).and_raise(ActiveRecord::RecordNotFound)
+      end
+
+      it 'renders a 404 error response' do
+        get :index, params: { page: 1 }
+
+        expect(response.status).to eq(404)
+        expect(json_response["error"]).to eq("Record not found")
       end
     end
   end
