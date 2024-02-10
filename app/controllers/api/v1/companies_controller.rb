@@ -1,21 +1,14 @@
 class Api::V1::CompaniesController < ApplicationController
   def index
-    page = filter_params[:page] || 1
-    companies = Company.where(nil)
-    companies = companies.filter_by_industry(filter_params[:industry]) if filter_params[:industry].present?
-    companies = companies.filter_by_name(filter_params[:name]) if filter_params[:name].present?
-    companies = companies.filter_by_min_employee_count(filter_params[:min_employee_count]) if filter_params[:min_employee_count].present?
-    companies = companies.filter_by_min_deal_amount(filter_params[:minimum_deal_amount]) if filter_params[:minimum_deal_amount].present?
-    companies = companies.page(page).order(:name)
-    companies = companies.select('SUM(deals.amount) as deals_amount, companies.*')
-                         .joins('LEFT OUTER JOIN deals ON companies.id = deals.company_id')
-                         .group('companies.id')
+    search_company_result = ::SearchCompanyService.new(filter_params).call
 
-    total_pages = companies.total_pages
+    if search_company_result[:errors].present?
+      return handle_errors(search_company_result[:errors], 422)
+    end
 
     render json: {
-      total_pages: total_pages,
-      companies: companies.as_json,
+      total_pages: search_company_result[:total_pages],
+      companies: search_company_result[:companies].as_json,
       }
   end
 
