@@ -27,14 +27,14 @@ describe('Home', () => {
   ];
 
   it('renders without crashing', () => {
-    mock.onGet('/api/v1/companies?page=0&name=&industry=&min_employee_count=&minimum_deal_amount=').reply(200, {
+    mock.onGet('/api/v1/companies').reply(200, {
       companies, total_pages: 1
     });
     render(<Home />);
   });
 
   it('fetches companies on component mount', async () => {
-    mock.onGet('/api/v1/companies?page=0&name=&industry=&min_employee_count=&minimum_deal_amount=').reply(200, {
+    mock.onGet('/api/v1/companies').reply(200, {
         companies, total_pages: 1
     });
 
@@ -47,13 +47,29 @@ describe('Home', () => {
   });
 
   it('displays error message if fetch fails', async () => {
-    mock.onGet('/api/v1/companies?page=0&name=&industry=&min_employee_count=&minimum_deal_amount=').reply(500, {
-      error_message: 'Something went wrong, please try again later'
+    mock.onGet('/api/v1/companies').reply(500, {
+      error_messages: ['Something went wrong, please try again later']
     });
 
     const { findByText } = render(<Home />);
     const errorMessage = await findByText('Something went wrong, please try again later');
+    expect(errorMessage).toBeInTheDocument();
+  });
 
+  it('displays error if special character entered for name', async () => {
+    companies = [
+      { id: 1, name: 'Company 1', industry: 'Technology', employee_count: 100, deals_amount: 1000 },
+      { id: 1, name: 'Name 1', industry: 'Technology', employee_count: 100, deals_amount: 1000 },
+    ];
+
+    mock.onGet('/api/v1/companies').reply(200, {
+      companies, total_pages: 1
+    });
+
+    const { getByLabelText, findByText } = render(<Home />);
+    fireEvent.change(getByLabelText('Company Name'), { target: { value: '@' } });
+
+    const errorMessage = await findByText('Only letters and numbers allowed for company name & industry');
     expect(errorMessage).toBeInTheDocument();
   });
 
@@ -63,7 +79,7 @@ describe('Home', () => {
       { id: 1, name: 'Name 1', industry: 'Technology', employee_count: 100, deals_amount: 1000 },
     ];
 
-    mock.onGet('/api/v1/companies?page=0&name=&industry=&min_employee_count=&minimum_deal_amount=').reply(200, {
+    mock.onGet('/api/v1/companies').reply(200, {
       companies, total_pages: 1
     });
 
@@ -71,7 +87,7 @@ describe('Home', () => {
       { id: 1, name: 'Company 1', industry: 'Technology', employee_count: 100, deals_amount: 1000 },
     ];
 
-    mock.onGet('/api/v1/companies?page=0&name=C&industry=&min_employee_count=&minimum_deal_amount=').reply(200, {
+    mock.onGet('/api/v1/companies').reply(200, {
       companies, total_pages: 1
     });
 
@@ -91,7 +107,7 @@ describe('Home', () => {
       { id: 1, name: 'Company 2', industry: 'Education', employee_count: 100, deals_amount: 1000 },
     ];
 
-    mock.onGet('/api/v1/companies?page=0&name=&industry=&min_employee_count=&minimum_deal_amount=').reply(200, {
+    mock.onGet('/api/v1/companies').reply(200, {
       companies, total_pages: 1
     });
 
@@ -99,7 +115,7 @@ describe('Home', () => {
       { id: 1, name: 'Company 1', industry: 'Technology', employee_count: 100, deals_amount: 1000 },
     ];
 
-    mock.onGet('/api/v1/companies?page=0&name=&industry=T&min_employee_count=&minimum_deal_amount=').reply(200, {
+    mock.onGet('/api/v1/companies').reply(200, {
       companies, total_pages: 1
     });
 
@@ -119,7 +135,7 @@ describe('Home', () => {
       { id: 1, name: 'Company 2', industry: 'Technology', employee_count: 99, deals_amount: 1000 },
     ];
 
-    mock.onGet('/api/v1/companies?page=0&name=&industry=&min_employee_count=&minimum_deal_amount=').reply(200, {
+    mock.onGet('/api/v1/companies').reply(200, {
       companies, total_pages: 1
     });
 
@@ -127,7 +143,7 @@ describe('Home', () => {
       { id: 1, name: 'Company 1', industry: 'Technology', employee_count: 100, deals_amount: 1000 },
     ];
 
-    mock.onGet('/api/v1/companies?page=0&name=&industry=&min_employee_count=100&minimum_deal_amount=').reply(200, {
+    mock.onGet('/api/v1/companies').reply(200, {
       companies, total_pages: 1
     });
 
@@ -147,7 +163,7 @@ describe('Home', () => {
       { id: 1, name: 'Company 2', industry: 'Technology', employee_count: 99, deals_amount: 999 },
     ];
 
-    mock.onGet('/api/v1/companies?page=0&name=&industry=&min_employee_count=&minimum_deal_amount=').reply(200, {
+    mock.onGet('/api/v1/companies').reply(200, {
       companies, total_pages: 1
     });
 
@@ -155,7 +171,7 @@ describe('Home', () => {
       { id: 1, name: 'Company 1', industry: 'Technology', employee_count: 101, deals_amount: 1001 },
     ];
 
-    mock.onGet('/api/v1/companies?page=0&name=&industry=&min_employee_count=&minimum_deal_amount=1000').reply(200, {
+    mock.onGet('/api/v1/companies').reply(200, {
       companies, total_pages: 1
     });
 
@@ -170,7 +186,7 @@ describe('Home', () => {
   });
 
   it('paginates companies correctly', async () => {
-    mock.onGet('/api/v1/companies?page=0&name=&industry=&min_employee_count=&minimum_deal_amount=').reply(200, {
+    mock.onGet('/api/v1/companies').reply(200, {
       companies, total_pages: 2
     });
 
@@ -179,7 +195,7 @@ describe('Home', () => {
       { id: 4, name: 'Company 4', industry: 'Finance', employee_count: 200, deals_amount: 2000 },
     ];
 
-    mock.onGet('/api/v1/companies?page=2&name=&industry=&min_employee_count=&minimum_deal_amount=').reply(200, {
+    mock.onGet('/api/v1/companies').reply(200, {
       companies, total_pages: 2 
     });
 
