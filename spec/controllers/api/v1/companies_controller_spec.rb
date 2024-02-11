@@ -44,6 +44,17 @@ RSpec.describe Api::V1::CompaniesController, type: :controller do
       end
     end
 
+    context 'with invalid filters' do
+      it 'returns errors' do
+        get :index, params: { minimum_deal_amount: -1, min_employee_count: -1, name: "@", industry: "@" }
+        expect(response.status).to eq(422)
+        expect(json_response['error_messages']).to eq ["Name must contain only letters and numbers",
+          "Industry must contain only letters and numbers",
+          "Min employee count only allows positive numbers",
+          "Minimum deal amount only allows positive numbers"]
+      end
+    end
+
     context 'with pagination' do
       it 'returns paginated results' do
         get :index, params: { page: 1 }
@@ -61,7 +72,7 @@ RSpec.describe Api::V1::CompaniesController, type: :controller do
         get :index, params: { page: 1 }
 
         expect(response.status).to eq(404)
-        expect(json_response["error"]).to eq("Record not found")
+        expect(json_response["error_messages"]).to eq(["Record not found"])
       end
     end
   end

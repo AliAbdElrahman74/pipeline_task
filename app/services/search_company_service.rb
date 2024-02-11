@@ -39,7 +39,7 @@ class SearchCompanyService
     total_pages = companies.total_pages
 
     return {
-      companies: companies,
+      companies: companies.as_json,
       total_pages: total_pages
     }
   end

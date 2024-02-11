@@ -8,7 +8,7 @@ class Api::V1::CompaniesController < ApplicationController
 
     render json: {
       total_pages: search_company_result[:total_pages],
-      companies: search_company_result[:companies].as_json,
+      companies: search_company_result[:companies],
       }
   end
 
