@@ -31,7 +31,7 @@ class SearchCompanyService
     companies = companies.filter_by_name(@params[:name]) if @params[:name].present?
     companies = companies.filter_by_min_employee_count(@params[:min_employee_count]) if @params[:min_employee_count].present?
     companies = companies.filter_by_min_deal_amount(@params[:minimum_deal_amount]) if @params[:minimum_deal_amount].present?
-    companies = companies.page(page).order(:name)
+    companies = companies.page(page).order(:name).fast_page
     companies = companies.select('SUM(deals.amount) as deals_amount, companies.*')
                          .joins('LEFT OUTER JOIN deals ON companies.id = deals.company_id')
                          .group('companies.id')
