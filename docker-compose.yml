@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3005:3005"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: mysql2://root:password@db/homework_assignment_2024_development
+    stdin_open: true
+    command: bin/dev
+
+  db:
+    image: mysql:8
+    volumes:
+      - my-rails-db:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: homework_assignment_2024_development
+    command:
+            --sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
+
+volumes:
+  my-rails-db:
